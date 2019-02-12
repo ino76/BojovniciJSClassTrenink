@@ -28,11 +28,11 @@ class Bojovnik {
 class Duel {
 
     static async zacniDuel(bojovnik1, bojovnik2) {
-        Duel.poradi = [bojovnik1, bojovnik2]
+        const poradi = [bojovnik1, bojovnik2]
 
         while (true) {
-            const utocnik = Duel.poradi[0]
-            const obrance = Duel.poradi[1]
+            const utocnik = poradi[0]
+            const obrance = poradi[1]
             const obranceZivoty = obrance.zivoty
 
             Duel.utok(utocnik, obrance)
@@ -47,16 +47,37 @@ a zranil ${obrance.jmeno}a za ${Duel.zraneni} z jeho ${obranceZivoty}-ti zivotu.
                 break
             }
 
-            Duel.poradi.reverse()
+            poradi.reverse()
             await sleep(4500)
         }
     }
 
+
+    static prihlas(...bojovnici) {
+        bojovnici.forEach(b => {
+            Duel.bojovnici.set(b.jmeno, b)
+            console.log(`Byl pridan bojovnik ${b.jmeno}.`)
+        })
+
+        console.log(Duel.bojovnici)
+    }
+
+    // teto metode staci jako atributy jen jmena bojovniku
+    static utok2(utocnik, obrance) {
+        const utoc = Duel.bojovnici.get(utocnik)
+        const obr = Duel.bojovnici.get(obrance)
+        obr.zraneni(utoc.utok())
+        console.log(Duel.bojovnici)
+    }
+
+
     // utocnik utoci na obrance
+    // tato metoda ma jako atributy cele objekty bojovniku
     static utok(utocnik, obrance) {
         obrance.zraneni(utocnik.utok())
     }
 }
+Duel.bojovnici = new Map()
 
 const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -66,4 +87,8 @@ const sleep = (milliseconds) => {
 // Bojovnik(jmeno, sila, zivoty)
 const conan = new Bojovnik("Conan", 15, 40)
 const kull = new Bojovnik("Kull", 12, 50)
+Duel.prihlas(conan, kull)
 Duel.zacniDuel(conan, kull)
+
+// Duel.utok2("Conan", "Kull")
+// Duel.utok2("Kull", "Kull")
